@@ -8,5 +8,6 @@ lazy val root = project
 
     scalaVersion := scala3Version,
 
+    libraryDependencies += "dev.zio" %% "zio" % "2.1-RC1",
     libraryDependencies += "com.github.sbt" % "junit-interface" % "0.13.2" % Test
   )

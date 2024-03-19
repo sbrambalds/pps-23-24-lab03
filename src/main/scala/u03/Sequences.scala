@@ -2,6 +2,7 @@ package u03
 
 import u02.AnonymousFunctions.l
 import u03.Optionals.Optional
+import u02.Tuples.t2
 
 object Sequences: // Essentially, generic linkedlists
   
@@ -38,7 +39,7 @@ object Sequences: // Essentially, generic linkedlists
     
     def concat[A](l1: Sequence[A], l2: Sequence[A]): Sequence[A] = (l1, l2) match
       case (Cons(h, t1), _)    => Cons(h, concat(t1, l2))
-      case (Nil(), Cons(h, t)) => Cons(h, t)
+      case (_, Cons(h, t)) => Cons(h, t)
       case _                   => Nil()
     
 
@@ -47,14 +48,13 @@ object Sequences: // Essentially, generic linkedlists
       case _          => Nil()
       
     def min(l: Sequence[Int]): Optional[Int] = l match
-      case Cons(h1, t1) => t1 match
-        case Cons(h2, t2) => (h1 < h2) match
-          case true  => Optional.Just(h1)
-          case false => Optional.Just(h2)
-        case Nil()  => Optional.Just(h1)
-      case Nil()  => Optional.Empty()
-    
-    
+      case Cons(h1, t1) => Optional.Just(min(t1) match
+        case Optional.Just(a) if a < h1 => a
+        case _ => h1
+        )
+      case _ => Optional.Empty()
+
+
 @main def trySequences =
   import Sequences.* 
   val l = Sequence.Cons(10, Sequence.Cons(20, Sequence.Cons(30, Sequence.Nil())))
