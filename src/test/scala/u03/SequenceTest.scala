@@ -3,6 +3,7 @@ package u03
 import Optionals.Optional.*
 import org.junit.*
 import org.junit.Assert.*
+import u02.Modules.Person
 
 class SequenceTest:
   import u03.Sequences.*
@@ -49,3 +50,6 @@ class SequenceTest:
     assertEquals(Just(1), min(Cons(1, Nil())))
     assertEquals(Empty(), min(Nil()))
 
+  @Test def testPersonsList() =
+    val persons: Sequence[Person] = Cons(Person.Teacher("marco", "pcd"), Cons(Person.Teacher("franco", "pps"), Cons(Person.Student("dario", 2000), Nil())))
+    assertEquals(Cons("pcd", Cons("pps", Nil())), courses(persons))
