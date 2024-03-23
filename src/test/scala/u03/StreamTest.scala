@@ -29,3 +29,20 @@ class StreamTest:
     val str2 = Stream.takeWhile(str1)(_ < 5) // {0,1,2,3,4}
     assertEquals(Cons(0, Cons(1, Cons(2, Cons(3, Cons(4, Nil()))))), Stream.toList(str2))
     
+  @Test def testFill(): Unit = 
+    val str1 = Stream.fill(3)("a")
+    val res = Cons("a", Cons("a", Cons("a", Nil())))
+    assertEquals(res, Stream.toList(str1))
+    assertEquals(Stream.empty(), Stream.fill(0)("a"))
+
+  @Test def testPell(): Unit = 
+    val pell: Stream[Int] = Stream.pell()
+    val str1 = Stream.toList(Stream.take(pell)(4)) 
+    val res = Cons(0, Cons(1, Cons(2, Cons(5, Nil()))))
+    assertEquals(res, str1)
+
+  @Test def testPell2(): Unit = 
+    val pell: Stream[Int] = Stream.pell2()
+    val str1 = Stream.toList(Stream.take(pell)(4)) 
+    val res = Cons(0, Cons(1, Cons(2, Cons(5, Nil()))))
+    assertEquals(res, str1)
