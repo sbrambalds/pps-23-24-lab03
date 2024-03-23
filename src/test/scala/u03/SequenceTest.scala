@@ -12,44 +12,60 @@ class SequenceTest:
   val l: Sequence[Int] = Cons(10, Cons(20, Cons(30, Nil())))
 
   @Test def testSum() =
-    assertEquals(0, sum(Nil()))
-    assertEquals(60, sum(l))
+    assertEquals(0, Nil().sum)
+    assertEquals(60, l.sum)
 
   @Test def testMap() =
-    assertEquals(Cons(11, Cons(21, Cons(31, Nil()))), map(l)(_ + 1))
-    assertEquals(Cons("10", Cons("20", Cons("30", Nil()))), map(l)(_ + ""))
+    assertEquals(Cons(11, Cons(21, Cons(31, Nil()))), l.map(_ + 1))
+    assertEquals(Cons("10", Cons("20", Cons("30", Nil()))), l.map(_ + ""))
 
   @Test def testFilter() =
-    assertEquals(Cons(20, Cons(30, Nil())), filter(l)(_ >= 20))
-    assertEquals(Cons(10, Cons(30, Nil())), filter(l)(_ != 20))
+    assertEquals(Cons(20, Cons(30, Nil())), l.filter(_ >= 20))
+    assertEquals(Cons(10, Cons(30, Nil())), l.filter(_ != 20))
   
   @Test def testTake() =
-    assertEquals(Cons(10, Cons(20, Nil())), take(l)(2))
-    assertEquals(Cons(10, Cons(20, Cons(30, Nil()))), take(l)(3))
-    assertEquals(Nil(), take(l)(0))
-    assertEquals(Nil(), take(Nil())(2))
+    assertEquals(Cons(10, Cons(20, Nil())), l.take(2))
+    assertEquals(Cons(10, Cons(20, Cons(30, Nil()))), l.take(3))
+    assertEquals(Nil(), l.take(0))
+    assertEquals(Nil(), Nil().take(2))
   
   @Test def testZip() = 
     val l2: Sequence[String] = Cons("10", Cons("20", Cons("30", Nil())))
-    assertEquals(Cons((10, "10"), Cons((20, "20"), Cons((30, "30"), Nil()))), zip(l, l2))
-    assertEquals(Nil(), zip(l, Nil()))
-    assertEquals(Nil(), zip(Nil(), l2))
-    assertEquals(Nil(), zip(Nil(), Nil()))
+    assertEquals(Cons((10, "10"), Cons((20, "20"), Cons((30, "30"), Nil()))), l.zip(l2))
+    assertEquals(Nil(), l.zip(Nil()))
+    assertEquals(Nil(), Nil().zip(l2))
+    assertEquals(Nil(), Nil().zip(Nil()))
 
   @Test def testConcat() =
     val l2: Sequence[Int] = Cons(40, Cons(50, Nil()))
-    assertEquals(Cons(10, Cons(20, Cons(30, Cons(40, Cons(50, Nil()))))), concat(l, l2))
-    assertEquals(Cons(40, Cons(50, Nil())), concat(Nil(), l2))
+    assertEquals(Cons(10, Cons(20, Cons(30, Cons(40, Cons(50, Nil()))))), l.concat(l2))
+    assertEquals(Cons(40, Cons(50, Nil())), Nil().concat(l2))
     
   @Test def testFlatMap() =
-    assertEquals(Cons(11, Cons(21, Cons(31, Nil()))), flatMap(l)(v => Cons(v + 1, Nil())))
-    assertEquals(Nil(), flatMap(Nil())(v => Cons(v, Nil())))
+    assertEquals(Cons(11, Cons(21, Cons(31, Nil()))), l.flatMap(v => Cons(v + 1, Nil())))
+    assertEquals(Nil(), Nil().flatMap(v => Cons(v, Nil())))
 
   @Test def testMin() =
-    assertEquals(Just(10), min(l))
-    assertEquals(Just(1), min(Cons(1, Nil())))
-    assertEquals(Empty(), min(Nil()))
+    assertEquals(Just(10), l.min)
+    assertEquals(Just(1), Cons(1, Nil()).min)
+    assertEquals(Empty(), Nil().min)
 
-  @Test def testPersonsList() =
+  @Test def testCourses() =
+    val withTeacher: Sequence[Person] = Cons(Person.Teacher("marco", "pcd"), Cons(Person.Teacher("franco", "pps"), Cons(Person.Student("dario", 2000), Nil())))
+    val withoutTeacher: Sequence[Person] = Cons(Person.Student("marco", 2001), Cons(Person.Student("dario", 2000), Nil()))
+    assertEquals(Cons("pcd", Cons("pps", Nil())), withTeacher.courses)
+    assertEquals(Nil(), withoutTeacher.courses)
+
+  @Test def testCourses2() =
     val persons: Sequence[Person] = Cons(Person.Teacher("marco", "pcd"), Cons(Person.Teacher("franco", "pps"), Cons(Person.Student("dario", 2000), Nil())))
-    assertEquals(Cons("pcd", Cons("pps", Nil())), courses(persons))
+    assertEquals(Cons("pcd", Cons("pps", Nil())), persons.courses2)
+
+  @Test def testFoldLeftWithSameType() = 
+    val res = -60
+    val l2: Sequence[Int] = Nil()
+    assertEquals(res, l.foldLeft(0)(_ - _))
+    assertEquals(10, l2.foldLeft(10)(_ - _))
+  
+  @Test def testFoldLeftWithDifferentTypes() =
+    val res = 60.5
+    assertEquals(res, l.foldLeft(0.5)(_ + _), 0)
